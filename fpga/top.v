@@ -23,17 +23,12 @@ module top
     output wire led,
     output wire phy_resetn,
 
-    output wire [5:0] R0,
-    output wire [5:0] G0,
-    output wire [5:0] B0,
-    output wire [5:0] R1,
-    output wire [5:0] G1,
-    output wire [5:0] B1,
-    output wire A,
-    output wire B,
-    output wire C,
-    output wire D,
-    output wire E, // for 1/32 scan
+    output wire [4:0] R0,
+    output wire [4:0] G0,
+    output wire [4:0] B0,
+    output wire [4:0] R1,
+    output wire [4:0] G1,
+    output wire [4:0] B1,
     output wire LAT,
     output wire OE, //blank
     output wire CLK
@@ -148,17 +143,12 @@ module top
 
     genvar panel_index;
 
-    wire [5:0] A_int;
-    wire [5:0] B_int;
-    wire [5:0] C_int;
-    wire [5:0] D_int;
-    wire [5:0] E_int;
-    wire [5:0] LAT_int;
-    wire [5:0] OE_int;
-    wire [5:0] CLK_int;
+    wire [4:0] LAT_int;
+    wire [4:0] OE_int;
+    wire [4:0] CLK_int;
 
     generate
-        for (panel_index = 0; panel_index < 6; panel_index=panel_index+1) begin
+        for (panel_index = 0; panel_index < 5; panel_index=panel_index+1) begin
 
             ledpanel panel_inst (
                 .ctrl_clk(clock),
@@ -174,11 +164,7 @@ module top
                 .panel_r1(R1[panel_index]),
                 .panel_g1(G1[panel_index]),
                 .panel_b1(B1[panel_index]),
-                .panel_a(A_int[panel_index]),
-                .panel_b(B_int[panel_index]),
-                .panel_c(C_int[panel_index]),
-                .panel_d(D_int[panel_index]),
-                .panel_e(E_int[panel_index]),
+
                 .panel_clk(CLK_int[panel_index]),
                 .panel_stb(LAT_int[panel_index]),
                 .panel_oe(OE_int[panel_index])
@@ -186,11 +172,6 @@ module top
         end
     endgenerate
 
-    assign A = A_int[0];
-    assign B = B_int[0];
-    assign C = C_int[0];
-    assign D = D_int[0];
-    assign E = E_int[0];
     assign LAT = LAT_int[0];
     assign OE  = OE_int[0];
     assign CLK = CLK_int[0];
