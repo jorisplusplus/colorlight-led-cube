@@ -1,9 +1,15 @@
 read_verilog ../liteeth_core.v
+read_verilog ../liteeth_core_tx.v
 read_verilog ../udp_panel_writer.v
 read_verilog ../ledpanel.v
 read_verilog ../pll.v
 read_verilog ../phy_io.v
 read_verilog ../top.v
+read_verilog ../buffer.v
+read_verilog ../fifo_fwft_adapter.v
+read_verilog ../fifo_fwft.v
+read_verilog ../fifo.v
+read_verilog ../simple_dpram_sclk.v
 
 synth_ecp5
 synth_ecp5 -retime

@@ -1,20 +1,20 @@
 # PHY0, U3
 
-LOCATE COMP "rgmii_tx_clk" SITE  "M2";
-LOCATE COMP "rgmii_txd[0]" SITE  "L1";
-LOCATE COMP "rgmii_txd[1]" SITE  "L3";
-LOCATE COMP "rgmii_txd[2]" SITE  "P2";
-LOCATE COMP "rgmii_txd[3]" SITE  "L4";
-LOCATE COMP "rgmii_tx_ctl" SITE  "M3";
-LOCATE COMP "rgmii_rx_clk" SITE  "M1";
-LOCATE COMP "rgmii_rxd[0]" SITE  "N1";
-LOCATE COMP "rgmii_rxd[1]" SITE  "M5";
-LOCATE COMP "rgmii_rxd[2]" SITE  "N5";
-LOCATE COMP "rgmii_rxd[3]" SITE  "M6";
-LOCATE COMP "rgmii_rx_ctl" SITE  "N6";
-LOCATE COMP "mdio_scl"     SITE  "P3";             #"P3";
-LOCATE COMP "mdio_sda"     SITE  "T2";             #"T2";
-LOCATE COMP "phy_resetn"   SITE  "P5";             #"P5";
+LOCATE COMP "rgmii_tx_clk" SITE  "L1";
+LOCATE COMP "rgmii_txd[0]" SITE  "M2";
+LOCATE COMP "rgmii_txd[1]" SITE  "M1";
+LOCATE COMP "rgmii_txd[2]" SITE  "P1";
+LOCATE COMP "rgmii_txd[3]" SITE  "R1";
+LOCATE COMP "rgmii_tx_ctl" SITE  "L2";
+LOCATE COMP "rgmii_rx_clk" SITE  "J1";
+LOCATE COMP "rgmii_rxd[0]" SITE  "K2";
+LOCATE COMP "rgmii_rxd[1]" SITE  "J3";
+LOCATE COMP "rgmii_rxd[2]" SITE  "K1";
+LOCATE COMP "rgmii_rxd[3]" SITE  "K3";
+LOCATE COMP "rgmii_rx_ctl" SITE  "J2";
+LOCATE COMP "mdio_scl"     SITE  "R5";             #"P3";
+LOCATE COMP "mdio_sda"     SITE  "T4";             #"T2";
+LOCATE COMP "phy_resetn"   SITE  "R6";             #"P5";
 
 IOBUF PORT "rgmii_tx_clk"  IO_TYPE=LVCMOS33;
 IOBUF PORT "rgmii_txd[0]"  IO_TYPE=LVCMOS33;
@@ -32,6 +32,32 @@ IOBUF PORT "mdio_scl"      IO_TYPE=LVCMOS33;
 IOBUF PORT "mdio_sda"      OPENDRAIN=ON IO_TYPE=LVCMOS33;
 IOBUF PORT "phy_resetn"    IO_TYPE=LVCMOS33;
 
+LOCATE COMP "txrgmii_tx_clk" SITE  "J16";
+LOCATE COMP "txrgmii_txd[0]" SITE  "K16";
+LOCATE COMP "txrgmii_txd[1]" SITE  "J15";
+LOCATE COMP "txrgmii_txd[2]" SITE  "J14";
+LOCATE COMP "txrgmii_txd[3]" SITE  "K15";
+LOCATE COMP "txrgmii_tx_ctl" SITE  "K14";
+LOCATE COMP "txrgmii_rx_clk" SITE  "M16";
+LOCATE COMP "txrgmii_rxd[0]" SITE  "M15";
+LOCATE COMP "txrgmii_rxd[1]" SITE  "R16";
+LOCATE COMP "txrgmii_rxd[2]" SITE  "L15";
+LOCATE COMP "txrgmii_rxd[3]" SITE  "L16";
+LOCATE COMP "txrgmii_rx_ctl" SITE  "P16";
+
+IOBUF PORT "txrgmii_tx_clk"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_txd[0]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_txd[1]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_txd[2]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_txd[3]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_tx_ctl"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_rx_clk"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_rxd[0]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_rxd[1]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_rxd[2]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_rxd[3]"  IO_TYPE=LVCMOS33;
+IOBUF PORT "txrgmii_rx_ctl"  IO_TYPE=LVCMOS33;
+
 
 # CLOCK
 
@@ -40,55 +66,55 @@ IOBUF PORT "osc25m" IO_TYPE=LVCMOS33;
 
 # USER IO
 
-LOCATE COMP "led" SITE "P11";
+LOCATE COMP "led" SITE "T6";
 IOBUF PORT "led" OPENDRAIN=ON IO_TYPE=LVCMOS33;
-LOCATE COMP "button" SITE "M13";
+LOCATE COMP "button" SITE "R7";
 IOBUF PORT "button" IO_TYPE=LVCMOS33;
 
 # PANEL
 
 
 
-#LOCATE COMP "A"      SITE "L2";
-#LOCATE COMP "B"      SITE "K1";
-#LOCATE COMP "C"      SITE "J5";
-#LOCATE COMP "D"      SITE "K2";
-#LOCATE COMP "E"      SITE "F15";
-LOCATE COMP "CLK"    SITE "L2";
-LOCATE COMP "LAT"    SITE "J5";
-LOCATE COMP "OE"     SITE "B16";
+#LOCATE COMP "A"      SITE "N5";
+#LOCATE COMP "B"      SITE "N3";
+#LOCATE COMP "C"      SITE "P3";
+#LOCATE COMP "D"      SITE "P4";
+#LOCATE COMP "E"      SITE "N4";
+LOCATE COMP "CLK"    SITE "N5";
+LOCATE COMP "LAT"    SITE "P3";
+LOCATE COMP "OE"     SITE "M3";
 
-LOCATE COMP "R0[0]"  SITE "F3"; # J1
-LOCATE COMP "G0[0]"  SITE "F1";
-LOCATE COMP "B0[0]"  SITE "G3";
-LOCATE COMP "R1[0]"  SITE "G2";
-LOCATE COMP "G1[0]"  SITE "H3";
-LOCATE COMP "B1[0]"  SITE "H5";
+LOCATE COMP "R0[0]"  SITE "C4"; # J1
+LOCATE COMP "G0[0]"  SITE "D4";
+LOCATE COMP "B0[0]"  SITE "E4";
+LOCATE COMP "R1[0]"  SITE "D3";
+LOCATE COMP "G1[0]"  SITE "F5";
+LOCATE COMP "B1[0]"  SITE "E3";
 
-LOCATE COMP "R0[1]"  SITE "G4"; # J2
-LOCATE COMP "G0[1]"  SITE "G5";
-LOCATE COMP "B0[1]"  SITE "J2";
-LOCATE COMP "R1[1]"  SITE "H2";
-LOCATE COMP "G1[1]"  SITE "J1";
-LOCATE COMP "B1[1]"  SITE "J3";
+LOCATE COMP "R0[1]"  SITE "F1"; # J2
+LOCATE COMP "G0[1]"  SITE "F2";
+LOCATE COMP "B0[1]"  SITE "G2";
+LOCATE COMP "R1[1]"  SITE "G1";
+LOCATE COMP "G1[1]"  SITE "H2";
+LOCATE COMP "B1[1]"  SITE "H3";
 
-LOCATE COMP "R0[2]"  SITE "J4"; # J3
-LOCATE COMP "G0[2]"  SITE "K3";
-LOCATE COMP "B0[2]"  SITE "G1";
-LOCATE COMP "R1[2]"  SITE "K4";
-LOCATE COMP "G1[2]"  SITE "C2";
-LOCATE COMP "B1[2]"  SITE "E3";
+LOCATE COMP "R0[2]"  SITE "B1"; # J3
+LOCATE COMP "G0[2]"  SITE "C2";
+LOCATE COMP "B0[2]"  SITE "C1";
+LOCATE COMP "R1[2]"  SITE "D1";
+LOCATE COMP "G1[2]"  SITE "E2";
+LOCATE COMP "B1[2]"  SITE "E1";
 
-LOCATE COMP "R0[3]"  SITE "C1"; # J4
-LOCATE COMP "G0[3]"  SITE "A3";
-LOCATE COMP "B0[3]"  SITE "F4";
-LOCATE COMP "R1[3]"  SITE "E1";
-LOCATE COMP "G1[3]"  SITE "F5";
-LOCATE COMP "B1[3]"  SITE "D1";
+LOCATE COMP "R0[3]"  SITE "P5"; # J4
+LOCATE COMP "G0[3]"  SITE "R3";
+LOCATE COMP "B0[3]"  SITE "P2";
+LOCATE COMP "R1[3]"  SITE "R2";
+LOCATE COMP "G1[3]"  SITE "T2";
+LOCATE COMP "B1[3]"  SITE "N6";
 
-LOCATE COMP "R0[4]"  SITE "H4"; # J5
-LOCATE COMP "G0[4]"  SITE "K5";
-LOCATE COMP "B0[4]"  SITE "P1";
-LOCATE COMP "R1[4]"  SITE "R1";
-LOCATE COMP "G1[4]"  SITE "L5";
-LOCATE COMP "B1[4]"  SITE "F2";
+LOCATE COMP "R0[4]"  SITE "T13"; # J5
+LOCATE COMP "G0[4]"  SITE "R12";
+LOCATE COMP "B0[4]"  SITE "R13";
+LOCATE COMP "R1[4]"  SITE "R14";
+LOCATE COMP "G1[4]"  SITE "T14";
+LOCATE COMP "B1[4]"  SITE "P12";

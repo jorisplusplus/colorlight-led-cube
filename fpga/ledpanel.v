@@ -21,7 +21,7 @@ module ledpanel (
 
 	input wire display_clock,
 	output reg panel_r0, panel_g0, panel_b0, panel_r1, panel_g1, panel_b1,
-	output reg panel_clk, panel_stb, panel_oe
+	output reg panel_a, panel_b, panel_c, panel_d, panel_e, panel_clk, panel_stb, panel_oe
 );
 
   parameter integer INPUT_DEPTH          = 6;    // bits of color before gamma correction
@@ -30,13 +30,19 @@ module ledpanel (
 
   localparam integer SIZE_BITS = $clog2(CHAINED);
 
-  reg [INPUT_DEPTH-1:0] video_mem_r [0:CHAINED*128-1];
-	reg [INPUT_DEPTH-1:0] video_mem_g [0:CHAINED*128-1];
-	reg [INPUT_DEPTH-1:0] video_mem_b [0:CHAINED*128-1];
+  reg [INPUT_DEPTH-1:0] video_mem_r [0:CHAINED*128+16];
+	reg [INPUT_DEPTH-1:0] video_mem_g [0:CHAINED*128+16];
+	reg [INPUT_DEPTH-1:0] video_mem_b [0:CHAINED*128+16];
 
   reg [COLOR_DEPTH-1:0] gamma_mem   [0:2**INPUT_DEPTH-1];
 
   initial begin:video_mem_init
+        panel_a <= 0;
+        panel_b <= 0;
+        panel_c <= 0;
+        panel_d <= 0;
+		panel_e <= 0;
+
 		$readmemh("6bit_to_7bit_gamma.mem",gamma_mem);
 
         $readmemh("red.mem",video_mem_r);
@@ -89,10 +95,10 @@ module ledpanel (
 	end
 
 	always @(posedge display_clock) begin
-		panel_oe <= 128*CHAINED-8 < cnt_x && cnt_x < 128*CHAINED+8;
-		if (state) begin
-			panel_clk <= 1 < cnt_x && cnt_x < 128*CHAINED+2;
-			panel_stb <= cnt_x == 128*CHAINED+2;
+		panel_oe <= 64*CHAINED-8 < cnt_x && cnt_x < 64*CHAINED+8;
+		if (!state) begin
+			panel_clk <= 1 < cnt_x && cnt_x < 64*CHAINED+2;
+			panel_stb <= cnt_x == 64*CHAINED+3;
 		end else begin
       panel_clk <= 0;
       panel_stb <= 0;
@@ -100,7 +106,7 @@ module ledpanel (
 	end
 
 	always @(posedge display_clock) begin
-		addr_x <= cnt_x[7+SIZE_BITS:0];
+		addr_x <= {cnt_x[6+SIZE_BITS:0], ~state};
 		addr_z <= cnt_z;
 	end
 
@@ -112,8 +118,8 @@ module ledpanel (
 
   always @(posedge display_clock) begin
 		data_rgb_q <= data_rgb;
-		if (!state) begin
-			if (0 < cnt_x && cnt_x < 128*CHAINED+1) begin
+		if (state) begin
+			if (0 < cnt_x && cnt_x < 64*CHAINED+2) begin
 				{panel_r1, panel_r0} <= {data_rgb[2], data_rgb_q[2]};
 				{panel_g1, panel_g0} <= {data_rgb[1], data_rgb_q[1]};
 				{panel_b1, panel_b0} <= {data_rgb[0], data_rgb_q[0]};

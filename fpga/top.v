@@ -11,6 +11,13 @@ module top
     output wire                       rgmii_tx_clk,
     output wire [3:0]                 rgmii_txd,
     output wire                       rgmii_tx_ctl,
+
+    input  wire                       txrgmii_rx_clk,
+    input  wire [3:0]                 txrgmii_rxd,
+    input  wire                       txrgmii_rx_ctl,
+    output wire                       txrgmii_tx_clk,
+    output wire [3:0]                 txrgmii_txd,
+    output wire                       txrgmii_tx_ctl,
     /*
      * MDIO interface
      */
@@ -46,6 +53,8 @@ module top
     wire                 reset = locked_reset[3];
     wire                 display_clock;
 
+    assign phy_resetn = 1;
+
     pll pll_inst(.clkin(osc25m),.clock(clock),.panel_clock(display_clock),.locked(locked));
 
     always @(posedge clock or negedge locked) begin
@@ -56,14 +65,14 @@ module top
         end
     end
 
-    wire          udp_sink_valid       = 1'b0;
-    wire          udp_sink_last        = 1'b0;
+    wire          udp_sink_valid;
+    wire          udp_sink_last;
     wire          udp_sink_ready       ;
-    wire  [15:0]  udp_sink_src_port    = 16'b0;
-    wire  [15:0]  udp_sink_dst_port    = 16'b0;
-    wire  [31:0]  udp_sink_ip_address  = 32'b0;
-    wire  [15:0]  udp_sink_length      = 16'b0;
-    wire  [31:0]  udp_sink_data        = 32'b0;
+    wire  [15:0]  udp_sink_src_port    = 16'h1337;
+    wire  [15:0]  udp_sink_dst_port;
+    wire  [31:0]  udp_sink_ip_address  = 32'hc0a8b232;
+    wire  [15:0]  udp_sink_length;
+    wire  [31:0]  udp_sink_data;
     wire  [3:0]   udp_sink_error       = 4'b0;
     wire          udp_source_valid     ;
     wire          udp_source_last      ;
@@ -75,9 +84,27 @@ module top
     wire  [31:0]  udp_source_data      ;
     wire  [3:0]   udp_source_error     ;
 
+    udp_buffer buffer_inst(
+        .clk(clock),
+        .rst(reset),
+
+        .udp_source_valid(udp_source_valid),
+        .udp_source_last(udp_source_last),
+        .udp_source_dst_port(udp_source_dst_port),
+        .udp_source_length(udp_source_length),
+        .udp_source_data(udp_source_data),
+
+        .udp_sink_ready(udp_sink_ready),
+        .udp_sink_valid(udp_sink_valid),
+        .udp_sink_last(udp_sink_last),
+        .udp_sink_dst_port(udp_sink_dst_port),
+        .udp_sink_length(udp_sink_length),
+        .udp_sink_data(udp_sink_data)
+    );
+
     phy_sequencer phy_sequencer_inst (.clock(clock),
                   .reset(reset),
-                  .phy_resetn(phy_resetn),
+                  .phy_resetn(),
                   .mdio_scl(mdio_scl),
                   .mdio_sda(mdio_sda),
                   .phy_init_done(phy_init_done));
@@ -95,15 +122,15 @@ module top
         /* input  [3:0]  */ .rgmii_eth_rx_data    (rgmii_rxd            ),
         /* output        */ .rgmii_eth_tx_ctl     (rgmii_tx_ctl         ),
         /* output [3:0]  */ .rgmii_eth_tx_data    (rgmii_txd            ),
-        /* input         */ .udp_sink_valid       (udp_sink_valid       ),
-        /* input         */ .udp_sink_last        (udp_sink_last        ),
-        /* output        */ .udp_sink_ready       (udp_sink_ready       ),
-        /* input [15:0]  */ .udp_sink_src_port    (udp_sink_src_port    ),
-        /* input [15:0]  */ .udp_sink_dst_port    (udp_sink_dst_port    ),
-        /* input [31:0]  */ .udp_sink_ip_address  (udp_sink_ip_address  ),
-        /* input [15:0]  */ .udp_sink_length      (udp_sink_length      ),
-        /* input [31:0]  */ .udp_sink_data        (udp_sink_data        ),
-        /* input [3:0]   */ .udp_sink_error       (udp_sink_error       ),
+        /* input         */ .udp_sink_valid       (0   ),
+        /* input         */ .udp_sink_last        (0   ),
+        /* output        */ .udp_sink_ready       (    ),
+        /* input [15:0]  */ .udp_sink_src_port    (0   ),
+        /* input [15:0]  */ .udp_sink_dst_port    (0   ),
+        /* input [31:0]  */ .udp_sink_ip_address  (0   ),
+        /* input [15:0]  */ .udp_sink_length      (0   ),
+        /* input [31:0]  */ .udp_sink_data        (0   ),
+        /* input [3:0]   */ .udp_sink_error       (0   ),
         /* output        */ .udp_source_valid     (udp_source_valid     ),
         /* output        */ .udp_source_last      (udp_source_last      ),
         /* input         */ .udp_source_ready     (udp_source_ready     ),
@@ -114,6 +141,40 @@ module top
         /* output [31:0] */ .udp_source_data      (udp_source_data      ),
         /* output [3:0]  */ .udp_source_error     (udp_source_error     )
     );
+
+    liteeth_core_tx eternit_tx (
+        /* input         */ .sys_clock            (clock                ),
+        /* input         */ .sys_reset            (reset & ~phy_init_done),
+        /* output        */ .rgmii_eth_clocks_tx  (txrgmii_tx_clk         ),
+        /* input         */ .rgmii_eth_clocks_rx  (txrgmii_rx_clk         ),
+        /* output        */ .rgmii_eth_rst_n      (                     ),
+        /* input         */ .rgmii_eth_int_n      (                     ),
+        /* inout         */ .rgmii_eth_mdio       (                     ),
+        /* output        */ .rgmii_eth_mdc        (                     ),
+        /* input         */ .rgmii_eth_rx_ctl     (txrgmii_rx_ctl         ),
+        /* input  [3:0]  */ .rgmii_eth_rx_data    (txrgmii_rxd            ),
+        /* output        */ .rgmii_eth_tx_ctl     (txrgmii_tx_ctl         ),
+        /* output [3:0]  */ .rgmii_eth_tx_data    (txrgmii_txd            ),
+        /* input         */ .udp_sink_valid       (udp_sink_valid        ),
+        /* input         */ .udp_sink_last        (udp_sink_last        ),
+        /* output        */ .udp_sink_ready       (udp_sink_ready       ),
+        /* input [15:0]  */ .udp_sink_src_port    (udp_sink_src_port    ),
+        /* input [15:0]  */ .udp_sink_dst_port    (udp_sink_dst_port    ),
+        /* input [31:0]  */ .udp_sink_ip_address  (udp_sink_ip_address  ),
+        /* input [15:0]  */ .udp_sink_length      (udp_sink_length      ),
+        /* input [31:0]  */ .udp_sink_data        (udp_sink_data        ),
+        /* input [3:0]   */ .udp_sink_error       (udp_sink_error       ),
+        /* output        */ .udp_source_valid     (  ),
+        /* output        */ .udp_source_last      (  ),
+        /* input         */ .udp_source_ready     (1 ),
+        /* output [15:0] */ .udp_source_src_port  (  ),
+        /* output [15:0] */ .udp_source_dst_port  (  ),
+        /* output [31:0] */ .udp_source_ip_address(  ),
+        /* output [15:0] */ .udp_source_length    (  ),
+        /* output [31:0] */ .udp_source_data      (  ),
+        /* output [3:0]  */ .udp_source_error     (  )
+    );
+
 
     wire [5:0]  ctrl_en;
     wire [3:0]  ctrl_wr;

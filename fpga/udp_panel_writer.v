@@ -1,5 +1,5 @@
 module udp_panel_writer
-                      #(parameter PORT_MSB = 16'h66)
+                      #(parameter PORT_MSB = 16'h00)
                        (input  wire          clock,
                         input  wire          reset,
                         input  wire          udp_source_valid,
