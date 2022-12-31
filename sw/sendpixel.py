@@ -125,14 +125,18 @@ class LedPanel():
             self.sock.sendto(payload, (self.ip, self.UDP_PORT[y]))
             #time.sleep(0.1)
 
-    def pixel(self, x, y, color):
+    def pixel(self, x, y, color, inverted=True):
         if type(color) is int:
             r = (color >> 16) & 0xFF
             g = (color >> 8) & 0xFF
             b = (color >> 0) & 0xFF
             self.framebuffer[y][x] = (g, b, r)
         elif type(color) is tuple:
-            self.framebuffer[y][x] = color
+            if inverted:
+                r, g, b = color
+                self.framebuffer[y][x] = (g, b, r)
+            else:
+                self.framebuffer[y][x] = color
 
     def fill(self, color=0):
         if type(color) is int:

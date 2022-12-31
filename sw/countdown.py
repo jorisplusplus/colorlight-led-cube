@@ -43,7 +43,9 @@ fullscr = ""
 
 newyearcolors = [(0x5F, 0x0F, 0x40), (0x9A, 0x03, 0x1E), (0xFB, 0x8B, 0x24), (0xE3, 0x64, 0x14), (0x0F, 0x4C, 0x5C)]
 
-targettime = datetime(2022, 12, 30, 11, 48, 30)
+targettime = datetime(2023, 1, 1, 0, 0, 0)
+seconds_till = int((targettime-datetime.now()).total_seconds())
+print(f"Seconds till midnight: {seconds_till}")
 trigger = targettime.strftime("%H:%M:%S")
 font = ImageFont.truetype(font_path, 16)
 
@@ -57,7 +59,7 @@ while True:
     delta = targettime-now
 
     # print(now.strftime("%H:%M:%S.%f"))
-    # print(delta.seconds+1)
+    print(delta.seconds+1)
 
     if now.strftime("%H:%M:%S") == trigger and flashprimed:
         flashprimed = False
@@ -86,8 +88,11 @@ while True:
     else:
         draw.text((24, 15), topstr, font=font, fill=(255, 0, 0), anchor="ms")
         draw.text((24, 35), botstr, font=fontL, fill=(255, 255, 255), anchor="ms")
-        draw.text((2*48, 15), "Loading 2023", font=fonts, fill=(255, 0, 0), anchor="ms")
-    
+        colorindex = (delta.seconds // 3) % len(newyearcolors)
+        draw.text((2*48, 15), "Loading 2023", font=fonts, fill=newyearcolors[colorindex], anchor="ms")
+        draw.rectangle([48+7, 25, 48+7+80+1, 35], fill=None, outline=(255, 255, 255), width=1)
+        barlength = int(80*(seconds_till-delta.total_seconds())/seconds_till)
+        draw.rectangle([48+7+1, 26, 48+7+barlength+1, 34], fill=(255, 0xD7, 0), outline=(255, 0xD7, 0), width=1)
     if dirty:
         for i in range(0, screen.width):
             for j in range(0, screen.height):
